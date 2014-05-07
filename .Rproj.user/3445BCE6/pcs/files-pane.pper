@@ -1,0 +1,9 @@
+{
+    "path" : "~/modelSelection/bayesianLinearRegression",
+    "sortOrder" : [
+        {
+            "ascending" : true,
+            "columnIndex" : 2
+        }
+    ]
+}
