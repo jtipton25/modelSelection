@@ -1,0 +1,150 @@
+\documentclass[fleqn]{article}
+\setlength{\topmargin}{0in} \setlength{\oddsidemargin}{0in}
+\setlength{\evensidemargin}{0in} \setlength{\headheight}{0in}
+\setlength{\headsep}{0in} \setlength{\textwidth}{6.5in}
+\setlength{\textheight}{9in}
+\setlength{\mathindent}{0pt}
+
+\usepackage[fleqn]{amsmath}
+\usepackage{dsfont}
+\usepackage{graphicx}
+\usepackage{url}
+%\usepackage{chicago}
+\usepackage{natbib}
+\def\bm#1{\mbox{\boldmath $#1$}}
+ 
+\title{Linear Regression Model}
+\author{John Tipton}
+\date{\today}
+\begin{document}
+\maketitle
+
+\section{Model Statement}
+%
+\subsection{Data Model}
+\begin{align*}
+\bm{y} & = \bm{X} \bm{\beta} + \bm{\epsilon}\\
+%
+\end{align*}
+%
+\subsection{Process Model}
+%
+\begin{align*}
+%
+\bm{\beta} | \sigma^2, \frac{1} {\bm{\gamma}^2} & \sim N(0, \Sigma_\beta) & \Sigma_\beta & =\sigma^2 \bm{D}_\gamma & \bm{D}_\gamma &  = diag(\gamma_1, \ldots, \gamma_p)\\
+%
+\bm{\epsilon} & \sim N(0, \bm{\Sigma}_\epsilon) & \bm{\Sigma}_\epsilon &  = \sigma^2_\epsilon \bm{I}\\
+%
+\end{align*}
+%
+\subsection{Parameter Model}
+%
+\begin{align*}
+%
+\sigma^2_\epsilon & \sim \mbox{IG}(\alpha_\epsilon, \beta_\epsilon)\\
+%
+\gamma_j & \sim \mbox{Exponential}(\lambda^2/2) \mbox{ for each } j = 1, \ldots, p\\
+%
+\lambda^2 & \sim \mbox{Gamma}(\alpha_\lambda, \beta_\lambda)
+%
+\end{align*}
+%
+where $p$ is the number of parameters in $\bm{\beta}$ and $\bm{\mu}_\beta = 0$. Equivalently, $1 / \gamma^2_j \sim \mbox{IG}(1, \lambda^2 / 2)$.
+%
+\section{Posterior}
+%
+\begin{align*}
+[\bm{\beta}, \bm{\gamma}^2, \sigma^2_\epsilon, \lambda^2 | \bm{y}] & \propto [\bm{y} | \bm{\beta}, \sigma^2_\epsilon] [\bm{\beta} | \sigma^2_\epsilon, \bm{\gamma}^2] [\sigma^2_\epsilon] [\bm{\gamma}] [\lambda^2]
+\end{align*}
+%
+\section{Full Conditionals}
+%
+\subsection{Full Conditional for $\bm{\beta}$}
+%
+\begin{align*}
+[\bm{\beta} | \cdot] & \propto [\bm{y} | \bm{\beta}, \sigma^2_\epsilon] [\bm{\beta} | \sigma^2_\epsilon, \bm{\gamma}^2]\\
+%
+& \propto e^{ - \frac{1} {2} (\bm{y} - \bm{X} \bm{\beta})^T \bm{\Sigma}_\epsilon^{ - 1} (\bm{y} - \bm{X} \bm{\beta})} e^{ - \frac{1} {2} \bm{\beta}^T \bm{\Sigma}_\beta^{ - 1} \bm{\beta}}\\
+%
+& \propto e^{ - \frac{1} {2} \left( \bm{\beta}^T (\bm{X}^T \bm{\Sigma}_\epsilon^{ - 1} \bm{X} + \bm{\Sigma}_\beta^{ - 1}) \bm{\beta} - 2 \bm{\beta}^T (\bm{X}^T \bm{\Sigma}_\epsilon^{ - 1} \bm{y} + \bm{\Sigma}_\beta^{ - 1} \bm{\mu}_\beta) \right) }\\
+\end{align*}
+%
+which is Normal with mean $ \bm{A}^{ - 1} \bm{b}$ and variance $\bm{A}^{ - 1}$ where
+\begin{align*}
+  \bm{A}^{ - 1} & = (\bm{X}^T \bm{\Sigma}_\epsilon^{ - 1} \bm{X} + \bm{\Sigma}_\beta^{ - 1})^{ - 1}\\
+  & = (\bm{X}^T \bm{X} + \bm{D}_\gamma)^{ - 1}\\
+  %
+  \bm{b} & = (\bm{X}^T \bm{\Sigma}_{\epsilon}^{ - 1} \bm{y} + \bm{\Sigma}_\beta^{ - 1} \bm{\mu}_\beta)\\
+  & =  \bm{X}^T \bm{y}
+\end{align*}
+%
+% \subsection{Full Conditional for $\bm{\mu}_\beta$}
+% %
+% \begin{align*}
+% [\bm{\mu}_\beta | \cdot] & \propto [\bm{\beta} | \bm{\mu}_\beta, \sigma^2_\beta] [\bm{\mu}_\beta]\\
+% %
+% & \propto e^{ - \frac{1} {2} (\bm{\beta} - \bm{\mu}_\beta)^T \bm{\Sigma}_\beta^{ - 1} (\bm{\beta} - \bm{\mu}_\beta)} e^{ - \frac{1} {2} (\bm{\mu}_\beta - \bm{\mu}_0)^T \Sigma_0^{ - 1} (\bm{\mu}_\beta - \bm{\mu}_0)}\\
+% %
+% & \propto e^{ - \frac{1} {2} (
+% \bm{\mu}_\beta^T (\bm{\Sigma}_\beta^{ - 1} + \bm{\Sigma}_0^{ - 1}) \bm{\mu}_\beta - 2 \bm{\mu}_\beta^T (\bm{\Sigma}_\beta^{ - 1} \bm{\beta} + \bm{\Sigma}_0^{ - 1} \bm{\mu}_0) ) }
+% \end{align*}
+% %
+% which is multivariate normal with mean $\bm{A}^{ - 1} \bm{b}$ and variance $\bm{A}^{ - 1}$ where
+% \begin{align*}
+% \bm{A}^{ - 1} & = (\bm{\Sigma}_\beta^{ - 1} + \bm{\Sigma}_0^{ - 1})^{ - 1}\\
+% \bm{b} & =  
+% (\bm{\Sigma}_\beta^{ - 1} \bm{\beta} + \bm{\Sigma}_0^{ - 1} \bm{\mu}_0)
+% \end{align*}
+% %
+% \subsection{Full Conditional for $\sigma^2_\beta$}
+% %
+% \begin{align*}
+% [\sigma^2_\beta | \cdot] & \propto [\bm{\beta} | \bm{\mu}_\beta, \sigma^2_\beta] [\sigma^2_\beta]\\
+% %
+% & \propto |\bm{\Sigma}_\beta|^{ - \frac{1} {2}}) e^{ - \frac{1} {2} (\bm{\beta} - \bm{\mu}_\beta)^T \bm{\Sigma}_\beta^{ - 1} (\bm{\beta} - \bm{\mu}_\beta)} (\sigma^2_\beta)^{ - (\alpha_\beta + 1)} e^{ - \frac{\beta_\beta} {\sigma^2_\beta}}\\
+% %
+% & \propto (\sigma^2_\beta)^{ - (\alpha_\beta + \frac{\tau} {2} + 1)} e^{ - \frac{1} {\sigma^2_\beta} (\frac{1} {2} (\bm{\beta} - \bm{\mu}_\beta)^T (\bm{\beta} - \bm{\mu}_\beta) + \beta_\beta)}
+% \end{align*}
+% %
+% which is IG$(\alpha_\beta + \frac{\tau} {2}, \frac{1} {2} (\bm{\beta} - \bm{\mu}_\beta)^T (\bm{\beta} - \bm{\mu}_\beta) + \beta_\beta)$ since the determinant $|\bm{\Sigma}_\beta| = (\sigma^2_\beta)^{\tau}$ and $\bm{\Sigma}_\beta^{ - 1} = \frac{1} {\sigma^2_\beta} \bm{I}$
+% %
+\subsection{Full Conditional for $\sigma^2_\epsilon$}
+%
+\begin{align*}
+[\sigma^2_\epsilon | \cdot] & \propto [\bm{y} | \bm{\beta}, \sigma^2_\epsilon] [\beta | \sigma^2_\epsilon, \bm{\gamma}^2] [\sigma^2_\epsilon]\\
+%
+ & \propto (|\bm{\Sigma}_\epsilon |^{ - \frac{1} {2}}) e^{ - \frac{1} {2} (\bm{y} - \bm{X} \bm{\beta})^T \bm{\Sigma}^{ - 1} (\bm{y} - \bm{X} \bm{\beta})} (|\bm{\Sigma}_\beta |^{ - \frac{1} {2}}) e^{ - \frac{1} {2} \bm{\beta}^T \bm{\Sigma}_{\beta}^{ - 1} \bm{\beta}}(\sigma^2_\epsilon)^{ - \alpha_\epsilon + 1} e^{ - \frac{\beta_\epsilon} {\sigma^2_\epsilon}}\\
+%
+& \propto (\sigma^2_\epsilon)^{ -\frac{n} {2} - \frac{p} {2} - \alpha_\epsilon - 1} e^{ - \frac{1} {\sigma^2_\epsilon} ( \frac{1} {2} (\bm{y} - \bm{X} \bm{\beta})^T (\bm{y} - \bm{X} \bm{\beta}) + \frac{1} {2} \bm{\beta}^T \bm{D}_\gamma^{ - 1} \bm{\beta} + \beta_\epsilon)}
+\end{align*}
+% 
+ IG$(\alpha_\beta + \frac{n} {2} + \frac{p} {n}, \frac{1} {2} (\bm{y} - \bm{X} \bm{\beta})^T (\bm{y} - \bm{X} \bm{\beta}) + \frac{1} {2} \bm{\beta}^t \bm{D}_\gamma \bm{\beta} + \beta_\beta)$ since $|\bm{\Sigma}_\epsilon| = (\sigma^2_\epsilon)^{n}$, $\bm{\Sigma}_\epsilon^{ - 1} = \frac{1} {\sigma^2_\epsilon} \bm{I}$, $|\bm{\Sigma}_\beta| = (\sigma^2_\epsilon)^{p} |\bm{D}_\gamma|$, and $\bm{\Sigma}_\beta^{ - 1} = \frac{1} {\sigma^2_\epsilon} \bm{D}_\gamma$
+%
+\subsection{Full Condtional for $\frac{1} {\gamma_j}$}
+%
+\begin{align*}
+[ \frac{1} {\gamma^2_j} | \cdot ] & \propto [\beta_j | \sigma^2_\epsilon, \gamma^2_j] [\frac{1} {\gamma^2_j}]\\
+%
+& \propto | \gamma^2_j |^{ - \frac{1} {2}} e^{ - \frac{1} {\gamma^2_j} \frac{\beta^2_j} {2 \sigma^2_\epsilon}} ( \frac{1} {\gamma^2_j} )^{ - 2} e^{\frac{\lambda^2 / 2}{\frac{1} {\gamma^2_j}}}\\
+& \propto (\frac{1} {\gamma^2_j})^{ - 3 / 2} e^{-\frac{1} {2} (\frac{1} {\gamma^2_j} \frac{\beta^2_j} {\sigma^2_\epsilon} + \frac{\lambda^2} {\frac{1} {\gamma^2_j}})}
+\end{align*}
+which is Inverse Gaussian($\mu', \lambda'$) where $\mu' = \sqrt{\frac{\lambda^2 \sigma^2_\epsilon} {\beta^2_j}}$ and $\lambda' = \lambda^2$. The inverse Gaussian distribution for $x > 0, \mu' > 0,$ and $\lambda > 0$
+%
+\begin{align*}
+f(x) & = (\frac{\lambda^2} {2 \pi x^3})^{1 / 2} e^{ - \frac{\lambda'(x - \mu')^2} {2 \mu'^2 x}}
+\end{align*}
+%
+\subsection{Full Conditional for $\lambda^2$}
+%
+\begin{align*}
+[\lambda^2 | \cdot] & \propto [\bm{\gamma}^2 | \lambda^2] [\lambda^2]\\
+%
+& \propto \prod_{j = 1}^p \frac{\lambda^2} {2} e^{ - \lambda^2 \frac{\gamma^2_j} {2}} (\lambda^2)^{\alpha_\lambda - 1} e^{ - \beta_\lambda \lambda^2}\\
+%
+& \propto (\lambda^2)^{\alpha_\lambda + p + 1} e^{ - \lambda^2 (\beta_\lambda + \sum_{j = 1}^p \gamma^2_j)}
+\end{align*}
+%
+which is Gamma($\alpha_\lambda + p, \beta_\lambda + \frac{1} {2} \sum_{j = 1}^p \gamma^2_j$)
+%
+
+\end{document}

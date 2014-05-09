@@ -1,4 +1,6 @@
 ~%2FmodelSelection%2FODA.R="BDD81847"
+~%2FmodelSelection%2FbayesianLassoRegression%2FfixedEffectModel%2Fmcmc.lm.lasso.R="F2ED32B3"
+~%2FmodelSelection%2FbayesianLassoRegression%2FfixedEffectModel%2Fscript.lm.lasso.R="ACEDD77A"
 ~%2FmodelSelection%2FbayesianLinearRegression%2Fmcmc.lm.R="1BBDF47A"
 ~%2FmodelSelection%2FbayesianLinearRegression%2Fscript.lm.R="C5501834"
 ~%2FmodelSelection%2FbayesianLinearRegressionCrossValidate%2Fmcmc.lm.cv.R="57CBB023"
