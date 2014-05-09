@@ -68,7 +68,7 @@ mcmc.oda <- function(Y.o, X.o, params, epsilon = 0.001){
   ##
   
   for(k in 1:n.mcmc){
-    if(k %% 100 == 0){
+    if(k %% 10000 == 0){
       cat(k, ' ')
     }
     

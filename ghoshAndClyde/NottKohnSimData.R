@@ -58,7 +58,7 @@ sigma.squared <- 2.5
 alpha <- 2
 pi.prior <- rep( 1 / 2, p)
 epsilon = 0.001
-n.mcmc <- 50000
+n.mcmc <- 200000
 lambda <- c(0, rep(1, p))
 params <- list('vector')
 params <- list(n.mcmc, alpha, pi.prior, lambda)
@@ -115,6 +115,7 @@ MSPE.lm
 
 source('~/modelSelection/bayesianLinearRegressionCrossValidate/mcmc.lm.cv.R')
 sigma.squared.beta <- 1
+k.fold <- 8
 
 make.cv.data <- function(Y, X, k.fold){
   n <- length(Y)
@@ -142,8 +143,8 @@ make.cv.data <- function(Y, X, k.fold){
 }
 
 
-data.cv <- make.cv.data(Y.o, X.o, k.fold = 8)
-data.cv
+data.cv <- make.cv.data(Y.o, X.o, k.fold)
+#data.cv
 n.burn <- n.mcmc / 5
 
 
@@ -152,28 +153,15 @@ sfInit(parallel = TRUE, cpus = 8)
 sfExportAll()
 sfClusterSetupRNG()
 ##
-min.grid <- 1
-max.grid <- 10
-grid.size <- 10
-
-test <- make.grid.search(min.grid, max.grid, grid.size)
-plot(test[, 2] ~ test[, 1], type = 'l')
+min.grid <- 0.25
+max.grid <- 4
+grid.size <- 16
+sigma.squared.beta <- seq(from = min.grid, to = max.grid, length = grid.size)
+sigma.squared.beta 
 
 ##
 ## functions
 ##
-
-make.grid.search <- function(min.grid, max.grid, grid.size){
-  sigma.squared.beta <- seq(from = min.grid, to = max.grid, length = grid.size)
-  MSPE.sim <- matrix(nrow = grid.size, ncol = 2)
-  for(i in 1:grid.size){
-    MSPE.sim[i, 1] <- sigma.squared.beta[i]
-    MSPE.sim[i, 2] <- mean(sfSapply(1:k.fold, fun.mcmc.chain, data.cv = data.cv, sigma.squared.beta = sigma.squared.beta))
-    cat(i, ' ')
-  }
-  return(MSPE.sim)
-}
-
 ## function to find MSPE for cv data
 fun.mcmc.chain <- function(iter, data.cv, sigma.squared.beta){
   model.fit <- mcmc.lm(data.cv[[iter]]$Y.cv, data.cv[[iter]]$X.cv, data.cv[[iter]]$X.val, n.mcmc, sigma.squared.beta)
@@ -181,14 +169,33 @@ fun.mcmc.chain <- function(iter, data.cv, sigma.squared.beta){
   return(MSPE.cv)
 }
 
+make.grid.search <- function(min.grid, max.grid, grid.size){
+  sigma.squared.beta <- seq(from = min.grid, to = max.grid, length = grid.size)
+  MSPE.sim <- matrix(nrow = grid.size, ncol = 2)
+  for(i in 1:grid.size){
+    MSPE.sim[i, 1] <- sigma.squared.beta[i]
+    MSPE.sim[i, 2] <- mean(sfSapply(1:k.fold, fun.mcmc.chain, data.cv = data.cv, sigma.squared.beta = sigma.squared.beta[i]))
+    cat(i, ' ')
+  }
+  return(MSPE.sim)
+}
+
+test <- make.grid.search(min.grid, max.grid, grid.size)
+plot(test[, 2] ~ test[, 1], type = 'l')
+
+
+
 
 
 ##
 ## fit simple model without cross-validation
 ##
+sigma.squared.beta <- test[, 1][which(test[, 2] == min(test[, 2]))]
 out.cv <- mcmc.lm(Y.o, X.o, X.new.center, n.mcmc, sigma.squared.beta)
 MSPE.cv <- mean((Y.new - apply(out.cv$y.pred.save[, (n.burn + 1):n.mcmc], 1 , mean))^2)
 
 MSPE
 MSPE.lm
 MSPE.cv
+
+# save.image('ODAmcmc.RData')
