@@ -198,4 +198,4 @@ MSPE
 MSPE.lm
 MSPE.cv
 
-# save.image('ODAmcmc.RData')
+save.image('~/modelSelection/data/ODAmcmc.RData')
