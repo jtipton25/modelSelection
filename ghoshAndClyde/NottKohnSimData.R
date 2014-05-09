@@ -58,7 +58,7 @@ sigma.squared <- 2.5
 alpha <- 2
 pi.prior <- rep( 1 / 2, p)
 epsilon = 0.001
-n.mcmc <- 200000
+n.mcmc <- 5000#200000
 lambda <- c(0, rep(1, p))
 params <- list('vector')
 params <- list(n.mcmc, alpha, pi.prior, lambda)
@@ -185,17 +185,85 @@ plot(test[, 2] ~ test[, 1], type = 'l')
 
 
 
-
+sfStop()
 
 ##
-## fit simple model without cross-validation
+## fit simple model with cross-validated sigma.squared.beta
 ##
 sigma.squared.beta <- test[, 1][which(test[, 2] == min(test[, 2]))]
 out.cv <- mcmc.lm(Y.o, X.o, X.new.center, n.mcmc, sigma.squared.beta)
 MSPE.cv <- mean((Y.new - apply(out.cv$y.pred.save[, (n.burn + 1):n.mcmc], 1 , mean))^2)
 
+##
+## fit using Lasso regression
+##
+source('~/modelSelection/bayesianLassoRegression/fixedEffectModel/mcmc.lm.lasso.fixed.lambda.R')
+
+## function to find MSPE for cv data
+fun.mcmc.chain.lasso <- function(iter, data.cv, lambda.squared, alpha.epsilon, beta.epsilon){
+  model.fit <- mcmc.lm.lasso(data.cv[[iter]]$Y.cv, data.cv[[iter]]$X.cv, data.cv[[iter]]$X.val, n.mcmc, alpha.epsilon, beta.epsilon, lambda.squared)
+  MSPE.cv <- mean((data.cv[[iter]]$Y.val - apply(model.fit$y.pred.save[, (n.burn + 1):n.mcmc], 1 , mean))^2)
+  return(MSPE.cv)
+}
+
+make.grid.search.lasso <- function(min.grid, max.grid, grid.size){
+  lambda.squared <- seq(from = min.grid, to = max.grid, length = grid.size)
+  MSPE.sim <- matrix(nrow = grid.size, ncol = 2)
+  for(i in 1:grid.size){
+    MSPE.sim[i, 1] <- lambda.squared[i]
+    MSPE.sim[i, 2] <- mean(sfSapply(1:k.fold, fun.mcmc.chain.lasso, data.cv = data.cv, lambda.squared = lambda.squared[i], alpha.epsilon = alpha.epsilon, beta.epsilon = beta.epsilon))
+    cat(i, ' ')
+  }
+  return(MSPE.sim)
+}
+
+##
+## Cross-validate Lasso for prediction
+##
+alpha.epsilon <- 0.01
+beta.epsilon <- 0.01
+alpha.lambda <- 1
+beta.lambda <- 20
+
+min.grid <- 0.25
+max.grid <- 4
+grid.size <- 16
+
+sfInit(parallel = TRUE, cpus = 8)
+sfExportAll()
+sfClusterSetupRNG()
+sfLibrary(statmod)
+
+cross.validate.lasso <- make.grid.search.lasso(min.grid, max.grid, grid.size)
+
+
+sfStop()
+
+
+##
+## fit simple model with cross-validated sigma.squared.beta
+##
+
+plot(cross.validate.lasso[, 2] ~ cross.validate.lasso[, 1], type = 'l')
+lambda.squared <- cross.validate.lasso[, 1][which(cross.validate.lasso[, 2] == min(cross.validate.lasso[, 2]))]
+
+out.lasso <- mcmc.lm.lasso(Y.o, X.o, X.new.center, n.mcmc, alpha.epsilon, beta.epsilon,lambda.squared)
+MSPE.lasso <- mean((Y.new - apply(X.new.center %*% out.lasso$beta.save[, (n.burn + 1):n.mcmc], 1, mean))^2)
+mean((Y.new - apply(out.lasso$y.pred.save[, (n.burn + 1):n.mcmc], 1, mean))^2)
+
+MSPE.lasso
+
+
+apply(X.new.center %*% out.lasso$beta.save[, (n.burn + 1):n.mcmc], 1, mean)
+apply(out.lasso$y.pred.save[, (n.burn + 1):n.mcmc], 1, mean)
+
+
+##
+## compare MSPE from different methods
+##
 MSPE
 MSPE.lm
 MSPE.cv
+MSPE.lasso
 
-save.image('~/modelSelection/data/ODAmcmc.RData')
+#save.image('~/modelSelection/data/ODAmcmc.RData')

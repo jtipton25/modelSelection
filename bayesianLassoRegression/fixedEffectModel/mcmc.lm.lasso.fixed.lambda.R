@@ -12,18 +12,19 @@
 ## libraries and functions
 ##
 
-mcmc.lm.lasso <- function(Y, X, n.mcmc, alpha.epsilon, beta.epsilon, alpha.lambda, beta.lambda){
+mcmc.lm.lasso <- function(Y, X, X.tilde, n.mcmc, alpha.epsilon, beta.epsilon, lambda.squared){
   
   ##
   ## Initialize variables
   ##
   
   n <- length(Y)
+  n.val <- dim(X.tilde)[1]
   tau <- dim(X)[2]
   # sigma.squared.epsilon
   sigma.squared.epsilon <- 1 / rgamma(1, alpha.epsilon, beta.epsilon) 
   # lambda
-  lambda.squared <- rgamma(1, alpha.lambda, beta.lambda)
+  #   lambda.squared <- rgamma(1, alpha.lambda, beta.lambda)
   # gamma
   gamma.squared <- rgamma(tau, 1, lambda.squared / 2)
   Dgamma <- diag(gamma.squared)
@@ -38,9 +39,10 @@ mcmc.lm.lasso <- function(Y, X, n.mcmc, alpha.epsilon, beta.epsilon, alpha.lambd
   beta.save <- matrix(nrow = tau, ncol = n.mcmc)
   sigma.squared.epsilon.save <- vector(length = n.mcmc)
   gamma.squared.save <-  matrix(nrow = tau, ncol = n.mcmc)
-  lambda.squared.save <- vector(length = n.mcmc)
+  #   lambda.squared.save <- vector(length = n.mcmc)
   Dbar.save <- vector(length = n.mcmc)
-  y.pred.save <-  matrix(nrow = n, ncol = n.mcmc)
+  y.pred.save <-  matrix(nrow = n.val, ncol = n.mcmc)
+  
   ##
   ## Start MCMC
   ##
@@ -77,7 +79,7 @@ mcmc.lm.lasso <- function(Y, X, n.mcmc, alpha.epsilon, beta.epsilon, alpha.lambd
     ## lambda.squared
     ##
     
-    lambda.squared <- rgamma(1, alpha.lambda + tau, beta.lambda + sum(gamma.squared) / 2)
+    #     lambda.squared <- rgamma(1, alpha.lambda + tau, beta.lambda + sum(gamma.squared) / 2)
     
     ##
     ## DIC calculations
@@ -89,7 +91,7 @@ mcmc.lm.lasso <- function(Y, X, n.mcmc, alpha.epsilon, beta.epsilon, alpha.lambd
     ## Posterior Predictive
     ##
     
-    y.pred <- X %*% beta + rnorm(n, mean = 0, sd = sqrt(sigma.squared.epsilon))
+    y.pred <- X.tilde %*% beta + rnorm(n.val, mean = 0, sd = sqrt(sigma.squared.epsilon))
     
     ##
     ## save variables
@@ -98,7 +100,7 @@ mcmc.lm.lasso <- function(Y, X, n.mcmc, alpha.epsilon, beta.epsilon, alpha.lambd
     beta.save[, k] <- beta
     sigma.squared.epsilon.save[k] <- sigma.squared.epsilon
     gamma.squared.save[, k] <- gamma.squared
-    lambda.squared.save[k] <- lambda.squared
+    #     lambda.squared.save[k] <- lambda.squared
     y.pred.save[, k] <- y.pred 
   }
   
@@ -106,5 +108,5 @@ mcmc.lm.lasso <- function(Y, X, n.mcmc, alpha.epsilon, beta.epsilon, alpha.lambd
   ## output
   ##
   
-  list(beta.save = beta.save, sigma.squared.epsilon.save = sigma.squared.epsilon.save, gamma.squared.save = gamma.squared.save, lambda.squared.save = lambda.squared.save, y.pred.save = y.pred.save)
+  list(beta.save = beta.save, sigma.squared.epsilon.save = sigma.squared.epsilon.save, gamma.squared.save = gamma.squared.save, y.pred.save = y.pred.save)
 }
