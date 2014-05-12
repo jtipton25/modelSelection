@@ -12,7 +12,7 @@
 ## libraries and functions
 ##
 
-mcmc.lm <- function(Y, X, X.tilde, n.mcmc, sigma.squared.beta){
+mcmc.lm.cv <- function(Y, X, Y.new, X.new, n.mcmc, sigma.squared.beta){
   
   ##
   ## Initialize variables
@@ -20,7 +20,7 @@ mcmc.lm <- function(Y, X, X.tilde, n.mcmc, sigma.squared.beta){
   
   n <- length(Y)
   if(is.null(dim(X))){tau <- 1} else {tau <- dim(X)[2]}
-  if(is.null(dim(X.tilde))){N <- length(X.tilde)} else {N <- dim(X.tilde)[1]}
+  if(is.null(dim(X.new))){N <- length(X.new)} else {N <- dim(X.new)[1]}
   #
   I.beta <- diag(tau)
   #   sigma.squared.beta <- 1 / rgamma(1, alpha.beta, beta.beta)
@@ -50,6 +50,7 @@ mcmc.lm <- function(Y, X, X.tilde, n.mcmc, sigma.squared.beta){
   sigma.squared.epsilon.save <- vector(length = n.mcmc)
   Dbar.save <- vector(length = n.mcmc)
   y.pred.save <- matrix(nrow = N, ncol = n.mcmc)
+  log.score.save <- vector(length = n.mcmc)
   
   ##
   ## Start MCMC
@@ -114,7 +115,13 @@ mcmc.lm <- function(Y, X, X.tilde, n.mcmc, sigma.squared.beta){
     ## posterior predictive distribution
     ##
     
-    y.pred.save[, k] <- rMVN(1 / sqrt(sigma.squared.epsilon) * I.full, 1 / sigma.squared.epsilon * X.tilde %*% beta)
+    y.pred.save[, k] <- rMVN(1 / sqrt(sigma.squared.epsilon) * I.full, 1 / sigma.squared.epsilon * X.new %*% beta)
+    
+    ##
+    ## log scoring rule
+    ##
+    
+    log.score.save[k] <- sum(dnorm(Y.new, mean = X.new %*% beta, sd = sqrt(sigma.squared.epsilon), log = TRUE))
     
     ##
     ## save variables
@@ -122,6 +129,7 @@ mcmc.lm <- function(Y, X, X.tilde, n.mcmc, sigma.squared.beta){
     
     beta.save[, k] <- beta
     sigma.squared.epsilon.save[k] <- sigma.squared.epsilon
+    
 #     sigma.squared.beta.save[k] <- sigma.squared.beta
   }
   
@@ -129,5 +137,5 @@ mcmc.lm <- function(Y, X, X.tilde, n.mcmc, sigma.squared.beta){
   ## output
   ##
   
-  list(beta.save = beta.save, sigma.squared.epsilon.save = sigma.squared.epsilon.save, Dbar.save = Dbar.save, y.pred.save = y.pred.save)
+  list(beta.save = beta.save, sigma.squared.epsilon.save = sigma.squared.epsilon.save, Dbar.save = Dbar.save, y.pred.save = y.pred.save, log.score.save = log.score.save)
 }

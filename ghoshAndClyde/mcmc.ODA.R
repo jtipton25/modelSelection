@@ -2,7 +2,7 @@
 ## MCMC sampler for orthogonal data augmentation
 ##
 
-mcmc.oda <- function(Y.o, X.o, params, epsilon = 0.001){
+mcmc.oda <- function(Y.o, X.o, Y.new, X.new, params, epsilon = 0.001){
   
   ##
   ## functions and subroutines
@@ -62,7 +62,8 @@ mcmc.oda <- function(Y.o, X.o, params, epsilon = 0.001){
   beta.save <- matrix(nrow = p + 1, ncol = n.mcmc)
   rho.save <- matrix(nrow = p, ncol = n.mcmc)
   delta.save <- delta
-  
+  log.score.save <- vector(length = n.mcmc)  
+
   ##
   ## begin mcmc
   ##
@@ -106,6 +107,12 @@ mcmc.oda <- function(Y.o, X.o, params, epsilon = 0.001){
     beta.tilde.gamma <- solve(t(X.o.gamma) %*% X.o.gamma + Delta.gamma) %*% t(X.o.gamma) %*% Y.o
     
     ##
+    ## log scoring rule
+    ##
+    
+    log.score <- sum(dnorm(Y.new, mean = cbind(X.new[, 1], X.new[, 2:(p + 1)][, gamma == 1]) %*% beta.tilde.gamma, sd = sqrt(sigma.squared), log = TRUE))
+    
+    ##
     ## save samples
     ##
     
@@ -114,8 +121,9 @@ mcmc.oda <- function(Y.o, X.o, params, epsilon = 0.001){
     beta.save[, k] <- beta.hat 
     rho.save[, k] <- rho
     delta.save <- delta
+    log.score.save[k] <- log.score
   }
-  list(gamma.save = gamma.save, sigma.squared.save = sigma.squared.save, beta.save = beta.save, rho.save = rho.save, delta.save = delta.save)
+  list(gamma.save = gamma.save, sigma.squared.save = sigma.squared.save, beta.save = beta.save, rho.save = rho.save, delta.save = delta.save, log.score.save = log.score.save)
   
 }
 
