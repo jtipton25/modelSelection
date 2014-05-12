@@ -12,13 +12,14 @@
 ## libraries and functions
 ##
 
-mcmc.lm.lasso <- function(Y, X, n.mcmc, alpha.epsilon, beta.epsilon, alpha.lambda, beta.lambda){
+mcmc.lm.lasso <- function(Y, X, Y.new, X.new, n.mcmc, alpha.epsilon, beta.epsilon, alpha.lambda, beta.lambda){
   
   ##
   ## Initialize variables
   ##
   
   n <- length(Y)
+  n.new <- dim(X.new)[1]
   tau <- dim(X)[2]
   # sigma.squared.epsilon
   sigma.squared.epsilon <- 1 / rgamma(1, alpha.epsilon, beta.epsilon) 
@@ -40,7 +41,8 @@ mcmc.lm.lasso <- function(Y, X, n.mcmc, alpha.epsilon, beta.epsilon, alpha.lambd
   gamma.squared.save <-  matrix(nrow = tau, ncol = n.mcmc)
   lambda.squared.save <- vector(length = n.mcmc)
   Dbar.save <- vector(length = n.mcmc)
-  y.pred.save <-  matrix(nrow = n, ncol = n.mcmc)
+  y.pred.save <-  matrix(nrow = n.new, ncol = n.mcmc)
+  log.score.save <- vector(length = n.mcmc)
   ##
   ## Start MCMC
   ##
@@ -89,7 +91,13 @@ mcmc.lm.lasso <- function(Y, X, n.mcmc, alpha.epsilon, beta.epsilon, alpha.lambd
     ## Posterior Predictive
     ##
     
-    y.pred <- X %*% beta + rnorm(n, mean = 0, sd = sqrt(sigma.squared.epsilon))
+    y.pred <- X.new %*% beta + rnorm(n.new, mean = 0, sd = sqrt(sigma.squared.epsilon))
+    
+    ##
+    ## log scoring rule
+    ##
+    
+    log.score <- sum(dnorm(Y.new, mean = X.new %*% beta, sd = sqrt(sigma.squared.epsilon), log = TRUE))
     
     ##
     ## save variables
@@ -100,11 +108,12 @@ mcmc.lm.lasso <- function(Y, X, n.mcmc, alpha.epsilon, beta.epsilon, alpha.lambd
     gamma.squared.save[, k] <- gamma.squared
     lambda.squared.save[k] <- lambda.squared
     y.pred.save[, k] <- y.pred 
+    log.score.save[k] <- log.score
   }
   
   ##
   ## output
   ##
   
-  list(beta.save = beta.save, sigma.squared.epsilon.save = sigma.squared.epsilon.save, gamma.squared.save = gamma.squared.save, lambda.squared.save = lambda.squared.save, y.pred.save = y.pred.save)
+  list(beta.save = beta.save, sigma.squared.epsilon.save = sigma.squared.epsilon.save, gamma.squared.save = gamma.squared.save, lambda.squared.save = lambda.squared.save, y.pred.save = y.pred.save, log.score.save = log.score.save)
 }
