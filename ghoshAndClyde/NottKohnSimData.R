@@ -185,7 +185,7 @@ log.score.lasso.cv <- mean(out.lasso.cv$log.score.save[(n.burn + 1):n.mcmc])
 ##
 
 # save.image('~/modelSelection/data/ODAmcmc.RData')
-load('~/modelSelection/data//ODAmcmc_May_13_2014.RData')
+# load('~/modelSelection/data//ODAmcmc_May_13_2014.RData')
 
 ##
 ## compare MSPE from different methods
