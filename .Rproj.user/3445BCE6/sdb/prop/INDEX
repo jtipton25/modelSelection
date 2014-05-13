@@ -5,6 +5,7 @@
 ~%2FmodelSelection%2FbayesianLinearRegression%2Fmcmc.lm.R="1BBDF47A"
 ~%2FmodelSelection%2FbayesianLinearRegression%2Fscript.lm.R="C5501834"
 ~%2FmodelSelection%2FbayesianLinearRegressionCrossValidate%2Fmcmc.lm.cv.R="57CBB023"
+~%2FmodelSelection%2Ffunctions%2Fmake.cv.data.R="1988F81A"
 ~%2FmodelSelection%2FghoshAndClyde%2FNottKohnSimData.R="390EE9EE"
 ~%2FmodelSelection%2FghoshAndClyde%2FODA.R="39710B46"
 ~%2FmodelSelection%2FghoshAndClyde%2Fmcmc.ODA.R="85C6D5D6"

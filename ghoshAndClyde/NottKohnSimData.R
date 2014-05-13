@@ -106,7 +106,7 @@ sfClusterSetupRNG()
 ## setup search grid for cross-validation
 
 min.grid <- 1
-max.grid <- 8
+max.grid <- 17
 grid.size <- 16
 sigma.squared.beta.cv <- seq(from = min.grid, to = max.grid, length = grid.size)
 
@@ -150,8 +150,8 @@ log.score.lasso <- mean(out.lasso$log.score.save[(n.burn + 1):n.mcmc])
 
 
 
-min.grid <- 6
-max.grid <- 16
+min.grid <- 1
+max.grid <- 17
 grid.size <- 16
 
 sfInit(parallel = TRUE, cpus = 8)
@@ -185,7 +185,7 @@ log.score.lasso.cv <- mean(out.lasso.cv$log.score.save[(n.burn + 1):n.mcmc])
 ##
 
 # save.image('~/modelSelection/data/ODAmcmc.RData')
-# load('~/modelSelection/data//ODAmcmc.RData')
+load('~/modelSelection/data//ODAmcmc_May_13_2014.RData')
 
 ##
 ## compare MSPE from different methods
@@ -203,4 +203,12 @@ log.score.lm #need to fit a bayesian linear model
 log.score.cv
 log.score.lasso
 log.score.lasso.cv
+
+layout(matrix(1:2, ncol = 2))
+plot(cross.validate.cv[, 2] ~ cross.validate.cv[, 1], ylab = 'MSPE', xlab = expression(sigma[beta[cv]]^2), type = 'l')
+plot(cross.validate.cv[, 3] ~ cross.validate.cv[, 1], ylab = 'log score', xlab = expression(sigma[beta[cv]]^2), type = 'l')
+
+layout(matrix(1:2, ncol = 2))
+plot(cross.validate.lasso[, 2] ~ cross.validate.lasso[, 1], ylab = 'MSPE', xlab = expression(lambda[cv]^2), type = 'l')
+plot(cross.validate.lasso[, 3] ~ cross.validate.lasso[, 1], ylab = 'log score', xlab = expression(lambda[cv]^2), type = 'l')
 
