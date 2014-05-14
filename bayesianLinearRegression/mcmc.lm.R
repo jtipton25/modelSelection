@@ -20,7 +20,7 @@ mcmc.lm <- function(Y, X, X.tilde, n.mcmc, mu.0, sigma.squared.beta.0, alpha.bet
   
   n <- length(Y)
   if(is.null(dim(X))){tau <- 1} else {tau <- dim(X)[2]}
-  if(is.null(dim(X.tilde))){N <- length(X.tilde)} else {N <- dim(X.tilde)[1]}
+  if(is.null(dim(X.tilde))){n.new <- length(X.tilde)} else {n.new <- dim(X.tilde)[1]}
   #
   I.beta <- diag(tau)
   sigma.squared.beta <- 1 / rgamma(1, alpha.beta, beta.beta)
@@ -28,7 +28,7 @@ mcmc.lm <- function(Y, X, X.tilde, n.mcmc, mu.0, sigma.squared.beta.0, alpha.bet
   Sigma.beta.inv <- 1 / sigma.squared.beta * I.beta 
   #
   I.epsilon <- diag(n)
-  I.full <- diag(N)
+  I.full <- diag(n.new)
   sigma.squared.epsilon <- 1 / rgamma(1, alpha.epsilon, beta.epsilon) 
   Sigma.epsilon <- sigma.squared.epsilon * I.epsilon
   Sigma.epsilon.inv <- 1 / sigma.squared.epsilon * I.epsilon
@@ -47,7 +47,8 @@ mcmc.lm <- function(Y, X, X.tilde, n.mcmc, mu.0, sigma.squared.beta.0, alpha.bet
   sigma.squared.beta.save <- vector(length = n.mcmc)
   sigma.squared.epsilon.save <- vector(length = n.mcmc)
   Dbar.save <- vector(length = n.mcmc)
-  y.pred.save <- matrix(nrow = N, ncol = n.mcmc)
+  y.pred.save <- matrix(nrow = n.new, ncol = n.mcmc)
+  BIC <- vector(length = n.mcmc)
   
   ##
   ## Start MCMC
@@ -100,8 +101,15 @@ mcmc.lm <- function(Y, X, X.tilde, n.mcmc, mu.0, sigma.squared.beta.0, alpha.bet
     ## posterior predictive distribution
     ##
     
-    y.pred.save[, k] <- rMVN(1 / sqrt(sigma.squared.epsilon) * I.full, 1 / sigma.squared.epsilon * X.tilde %*% beta)
+#     y.pred.save[, k] <- rMVN(1 / sqrt(sigma.squared.epsilon) * I.full, 1 / sigma.squared.epsilon * X.tilde %*% beta)
+    y.pred.save[, k] <- X.tilde %*% beta + rnorm(n.new, mean = 0, sd = sqrt(sigma.squared.epsilon))
+    
+    ##
+    ## BIC
+    ##
       
+    BIC[k] <- Dbar.save[k] + tau * log(n)
+    
     ##
     ## save variables
     ##
@@ -115,5 +123,5 @@ mcmc.lm <- function(Y, X, X.tilde, n.mcmc, mu.0, sigma.squared.beta.0, alpha.bet
   ## output
   ##
   
-  list(beta.save = beta.save, sigma.squared.beta.save = sigma.squared.beta.save, sigma.squared.epsilon.save = sigma.squared.epsilon.save, Dbar.save = Dbar.save, y.pred.save = y.pred.save)
+  list(beta.save = beta.save, sigma.squared.beta.save = sigma.squared.beta.save, sigma.squared.epsilon.save = sigma.squared.epsilon.save, Dbar.save = Dbar.save, y.pred.save = y.pred.save, BIC = BIC)
 }
