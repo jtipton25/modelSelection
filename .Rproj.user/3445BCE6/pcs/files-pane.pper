@@ -1,5 +1,5 @@
 {
-    "path" : "~/modelSelection/bayesianLassoRegression/fixedEffectModel",
+    "path" : "~/modelSelection/bayesianLinearRegression",
     "sortOrder" : [
         {
             "ascending" : true,
