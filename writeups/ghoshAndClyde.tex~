@@ -1,0 +1,24 @@
+\documentclass{article}
+
+\usepackage{amsmath}
+\usepackage{graphicx}
+\usepackage{natbib}
+\def\bm#1{\mbox{\boldmath $#1$}}
+
+\title{ODA BMA via Ghosh and Clyde}
+
+\begin{document}
+\section{Data Model}
+\begin{align*}
+\left[ \bm{y} \middle| \bm{\beta}, \sigma^2 \right] & = \int_{\bm{\gamma}} \left[ \bm{y}_c \middle| \bm{\beta}_{\bm{\gamma}}, \sigma^2, \bm{\gamma} \right] d\bm{\gamma}
+
+
+
+
+
+
+
+
+
+
+\end{document}
