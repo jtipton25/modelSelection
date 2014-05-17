@@ -1,0 +1,102 @@
+\documentclass{article}
+
+\usepackage{amsmath}
+\usepackage{graphicx}
+\usepackage{natbib}
+\def\bm#1{\mbox{\boldmath $#1$}}
+
+\title{ODA BMA via Ghosh and Clyde}
+
+\begin{document}
+%%
+%%
+%%
+\section{The Model}
+%%
+%%
+\subsection{Data Model}
+%
+\begin{align*}
+%
+\left[ \bm{y}_o \middle| \bm{\beta}, \sigma^2 \right] & = \frac{1} {\tau} \sum_{\bm{\gamma} \in \bm{\Gamma}} \left[ \bm{y}_c \middle| \bm{\beta}_{\bm{\gamma}}, \sigma^2, \bm{\gamma} \right]
+%
+\end{align*}
+where $\tau$ is the number of models under consideration.
+%%
+%%
+\subsection{Parameter Model}
+%%
+\begin{align*}
+%
+\left[ \beta_0 \right] & \propto 1\\
+%
+\left[ \beta_j \middle| \sigma^2, \lambda_j, \gamma_j \right] & \stackrel{iid} {\sim} \begin{cases} 0 & \mbox{if } \gamma_j = 0\\ \mbox{N}\left( 0, \frac{\sigma^2} {\lambda_j} \right) & \mbox{if } \gamma_j = 1 \end{cases} & \mbox{for } j = 1, \ldots , p \\
+%
+\left[ \sigma^2 \right] & \propto \frac{1} {\sigma^2} \\
+%
+\left[ \gamma_j \right] & \propto \mbox{Bern} \left( \pi_j \right) & \mbox{for } j = 1, \ldots, p\\
+%
+\end{align*}
+where $\pi_j$ and $\lambda_j$ are fixed hyperpriors for $j = 1, \ldots, p$.%
+%%
+\subsection{Posterior}
+%
+For a given model indexed by $\bm{\gamma}$, the posterior distribution is
+%
+\begin{align*}
+%
+\left[ \bm{\beta}_{\bm{\gamma}}, \sigma^2, \bm{\gamma} \middle| \bm{y}_o, \bm{X}_o, \bm{X}_a \right] & = \int \left[ \bm{y}_a, \bm{\beta}_{\bm{\gamma}}, \sigma^2, \bm{\gamma} \middle| \bm{y}_o, \bm{X}_o, \bm{X}_a \right] \,d \bm{y}_a\\
+%
+& = \frac{\int \left[ \bm{y}_o, \middle| \bm{\beta}_{\bm{\gamma}}, \sigma^2, \bm{\gamma}, \bm{X}_o \right] \left[ \bm{y}_a \middle| \bm{\beta}_{\bm{\gamma}}, \sigma^2, \bm{\gamma}, \bm{X}_a \right] \left[ \bm{\beta}_{\bm{\gamma}}, \sigma^2 \middle| \bm{\gamma} \right] \left[ \bm{\gamma} \right] \, d \bm{y}_a} {\sum_{\bm{\gamma} \in \bm{\Gamma}} \int \int \int \left[ \bm{y}_o, \middle| \bm{\beta}_{\bm{\gamma}}, \sigma^2, \bm{\gamma}, \bm{X}_o \right] \left[ \bm{y}_a \middle| \bm{\beta}_{\bm{\gamma}}, \sigma^2, \bm{\gamma}, \bm{X}_a \right] \left[ \bm{\beta}_{\bm{\gamma}}, \sigma^2 \middle| \bm{\gamma} \right] \left[ \bm{\gamma} \right] \, d \bm{y}_a \, d \bm{\beta}_{\bm{\gamma}} \, d \sigma^2} \\
+%
+& = \frac{ \left[ \bm{y}_o, \middle| \bm{\beta}_{\bm{\gamma}}, \sigma^2, \bm{\gamma}, \bm{X}_o \right] \left[ \bm{\beta}_{\bm{\gamma}}, \sigma^2 \middle| \bm{\gamma} \right] \left[ \bm{\gamma} \right] \left\{ \int \left[ \bm{y}_a \middle| \bm{\beta}_{\bm{\gamma}}, \sigma^2, \bm{\gamma}, \bm{X}_a \right] \, d \bm{y}_a \right\} } { \sum_{\bm{\gamma} \in \bm{\Gamma}} \int \int \left[ \bm{y}_o, \middle| \bm{\beta}_{\bm{\gamma}}, \sigma^2, \bm{\gamma}, \bm{X}_o \right] \left[ \bm{\beta}_{\bm{\gamma}}, \sigma^2 \middle| \bm{\gamma} \right] \left[ \bm{\gamma} \right] \left\{ \int  \left[ \bm{y}_a \middle| \bm{\beta}_{\bm{\gamma}}, \sigma^2, \bm{\gamma}, \bm{X}_a \right] \, d \bm{y}_a \right\} \, d \bm{\beta}_{\bm{\gamma}} \, d \sigma^2 
+ } \\
+%
+& = \frac{ \left[ \bm{y}_o, \middle| \bm{\beta}_{\bm{\gamma}}, \sigma^2, \bm{\gamma}, \bm{X}_o \right] \left[ \bm{\beta}_{\bm{\gamma}}, \sigma^2 \middle| \bm{\gamma} \right] \left[ \bm{\gamma} \right] } { \sum_{\bm{\gamma} \in \bm{\Gamma}} \int \int \left[ \bm{y}_o, \middle| \bm{\beta}_{\bm{\gamma}}, \sigma^2, \bm{\gamma}, \bm{X}_o \right] \left[ \bm{\beta}_{\bm{\gamma}}, \sigma^2 \middle| \bm{\gamma} \right] \left[ \bm{\gamma} \right] \, d \bm{y}_a \, d \bm{\beta}_{\bm{\gamma}} \, d \sigma^2 } \\
+%
+ & = \left[ \bm{\beta}_{\bm{\gamma}}, \sigma^2, \bm{\gamma} \middle| \bm{y}_o, \bm{X}_o \right]
+%
+\end{align*}
+%
+which is independent of the augmented data $\left( \bm{y}_a, \bm{X}_a \right)$. For the Gibbs sampler we use the posterior definition of
+\begin{align*}
+\left[ \bm{\beta}_{\bm{\gamma}}, \sigma^2, \bm{\gamma} \middle| \bm{y}_o, \bm{X}_o, \bm{X}_a \right] & \propto \int \left[ \bm{y}_o, \middle| \bm{\beta}_{\bm{\gamma}}, \sigma^2, \bm{\gamma}, \bm{X}_o \right] \left[ \bm{y}_a \middle| \bm{\beta}_{\bm{\gamma}}, \sigma^2, \bm{\gamma}, \bm{X}_a \right] \left[ \bm{\beta}_{\bm{\gamma}}, \sigma^2 \middle| \bm{\gamma} \right] \left[ \bm{\gamma} \right] \, d \bm{y}_a
+\end{align*}
+%%
+%%
+%%
+\section{Full Conditionals}
+%%
+%%
+\subsection{Full Conditional for $\sigma^2$}
+%
+\begin{align*}
+%
+\left[ \sigma^2 \middle| \cdot \right] & \propto \int \left[ \bm{y}_o, \middle| \bm{\beta}_{\bm{\gamma}}, \sigma^2, \bm{\gamma}, \bm{X}_o \right] \left[ \bm{y}_a \middle| \bm{\beta}_{\bm{\gamma}}, \sigma^2, \bm{\gamma}, \bm{X}_a \right] \left[ \bm{\beta}_{\bm{\gamma}}, \sigma^2 \middle| \bm{\gamma} \right] \, d \bm{y}_a\\
+%
+ & \propto \int \left[ \bm{y}_a \middle| \bm{\beta}_{\bm{\gamma}}, \sigma^2, \bm{\gamma}, \bm{X}_a \right] \, d \bm{y}_a \left[ \bm{y}_o, \middle| \bm{\beta}_{\bm{\gamma}}, \sigma^2, \bm{\gamma}, \bm{X}_o \right] \left[ \bm{\beta}_{\bm{\gamma}}, \sigma^2 \middle| \bm{\gamma} \right] \\
+%
+ & \propto \left[ \bm{y}_o, \middle| \bm{\beta}_{\bm{\gamma}}, \sigma^2, \bm{\gamma}, \bm{X}_o \right] \left[ \bm{\beta}_{\bm{\gamma}}, \sigma^2 \middle| \bm{\gamma} \right] \\
+%
+ & \propto \left( \sigma^2 \right)^{ - \frac{n_o} {2}} \exp{\left\{ - \frac{1} {\sigma^2} \frac{ \left( \bm{y}_o - \bm{X}_{o \bm{\gamma}} \bm{\beta}_{\bm{\gamma}} \right)^T \left( \bm{y}_o - \bm{X}_{o \bm{\gamma}} \bm{\beta}_{\bm{\gamma}} \right) } {2} \right\} } \left( \sigma^2 \right)^{ - \frac{p_{\bm{\gamma}}} {2}} \exp{ \left\{ - \frac{1} {\sigma^2} \frac{\bm{\beta}_{\bm{\gamma}}^T \bm{\Lambda}_{\bm{\gamma}} \bm{\beta}_{\bm{\gamma}}} {2} \right\} } \left( \sigma^2 \right)^{ - 1}\\
+%
+ & \propto \left( \sigma^2 \right)^{ - \frac{n_o + p_{\bm{\gamma}}} {2} - 1} \exp{\left\{ - \frac{1} {\sigma^2} \frac{ \left( \bm{y}_o - \bm{X}_{o \bm{\gamma}} \bm{\beta}_{\bm{\gamma}} \right)^T \left( \bm{y}_o - \bm{X}_{o \bm{\gamma}} \bm{\beta}_{\bm{\gamma}} \right) + \bm{\beta}_{\bm{\gamma}}^T \bm{\Lambda}_{\bm{\gamma}} \bm{\beta}_{\bm{\gamma}} } {2} \right\} } 
+%
+\end{align*}
+%
+which is $\mbox{IG} \left( \frac{n_o + p_{\bm{\gamma}}} {2}, \frac{\left( \bm{y}_o - \bm{X}_{o \bm{\gamma}} \bm{\beta}_{\bm{\gamma}} \right)^T \left( \bm{y}_o - \bm{X}_{o \bm{\gamma}} \bm{\beta}_{\bm{\gamma}} \right) + \bm{\beta}_{\bm{\gamma}}^T \bm{\Lambda}_{\bm{\gamma}} \bm{\beta}_{\bm{\gamma}}} {2} \right)$
+%%
+%%
+\subsection{Full Conditional for $\bm{y}_a$}
+%
+%\begin{align*}
+%\left[ \bm{y}_a \middle| \cdot \right] & \propto 
+%\end{align*}
+
+
+
+
+
+
+
+\end{document}
