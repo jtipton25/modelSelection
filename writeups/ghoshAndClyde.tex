@@ -1,6 +1,12 @@
-\documentclass{article}
+\documentclass[fleqn]{article}
+\setlength{\topmargin}{0in} \setlength{\oddsidemargin}{0in}
+\setlength{\evensidemargin}{0in} \setlength{\headheight}{0in}
+\setlength{\headsep}{0in} \setlength{\textwidth}{6.5in}
+\setlength{\textheight}{9in}
+\setlength{\mathindent}{0pt}
 
 \usepackage{amsmath}
+\usepackage{dsfont}
 \usepackage{graphicx}
 \usepackage{natbib}
 \def\bm#1{\mbox{\boldmath $#1$}}
@@ -18,7 +24,7 @@
 %
 \begin{align*}
 %
-\left[ \bm{y}_o \middle| \bm{\beta}, \sigma^2 \right] & = \frac{1} {\tau} \sum_{\bm{\gamma} \in \bm{\Gamma}} \left[ \bm{y}_c \middle| \bm{\beta}_{\bm{\gamma}}, \sigma^2, \bm{\gamma} \right]
+\left[ \bm{y}_o \middle| \bm{\beta}, \sigma^2 \right] & = \frac{1} {\tau} \sum_{\bm{\gamma} \in \bm{\Gamma}} \left[ \bm{y}_c \middle| \bm{\beta}_{\bm{\gamma}}, \sigma^2, \bm{\gamma} \right] \left[ \bm{\gamma} \middle| \bm{y}_c, \sigma^2 \right]
 %
 \end{align*}
 where $\tau$ is the number of models under consideration.
@@ -65,6 +71,67 @@ which is independent of the augmented data $\left( \bm{y}_a, \bm{X}_a \right)$. 
 %%
 %%
 %%
+\section{Posteriors}
+%%
+%%
+\subsection{Posterior for $\bm{\beta}_{\bm{\gamma}}$}
+%
+\begin{align*}
+%
+\left[ \bm{\beta}_{\bm{\gamma}} \middle| \sigma^2, \bm{\gamma}, \bm{y}_o \right] & \propto \left[ \bm{y}_o \middle| \bm{\beta}_{\bm{\gamma}}, \sigma^2, \bm{\gamma} \right] \left[ \bm{\beta}_{\bm{\gamma}} \middle| \sigma^2, \bm{\gamma} \right] \\
+%
+& \propto \exp{ \left\{ - \frac{1} {2 \sigma^2} \left( \bm{y}_o - \bm{X}_{o \bm{\gamma}} \bm{\beta}_{\bm{\gamma}} \right)^T \left( \bm{y}_o - \bm{X}_{o \bm{\gamma}} \bm{\beta}_{\bm{\gamma}} \right) \right\} } \exp{ \left\{ - \frac{1} {2 \sigma^2} \bm{\beta}_{\bm{\gamma}}^T \bm{\Delta}_{\bm{\gamma}} \bm{\beta}_{\bm{\gamma}} \right\} } \\
+%
+& \propto \exp{ \left\{ - \frac{1} {2 \sigma^2} \left[ \bm{\beta}_{\bm{\gamma}}^T \left( \bm{X}_{o \bm{\gamma}}^T \bm{X}_{o \bm{\gamma}} + \bm{\Delta}_{\bm{\gamma}} \right) \bm{\beta}_{\bm{\gamma}} - 2 \bm{\beta}_{\bm{\gamma}}^T \bm{X}_{o \bm{\gamma}}^T \bm{y}_o \right] \right\} }
+%
+\end{align*}
+%
+which is MVN$\left( \bm{A}^{ - 1} \bm{b}, \bm{A}^{ - 1} \right)$ where $\bm{A}^{ - 1} = \left( \bm{X}_{o \bm{\gamma}}^T \bm{X}_{o \bm{\gamma}} + \bm{\Delta}_{\bm{\gamma}} \right)^{ - 1}$ and $\bm{b} = \bm{X}_{o \bm{\gamma}}^T \bm{y}_o$.
+%%
+%%
+\subsection{Posterior for $\sigma^2$}
+%
+\begin{align*}
+%
+\left[ \sigma^2 \middle| \bm{\gamma}, \bm{y}_o \right] & = \frac{\left[ \sigma^2, \bm{\beta}_{\bm{\gamma}} \middle| \bm{\gamma}, \bm{y}_o \right]} {\left[ \bm{\beta}_{\bm{\gamma}} \middle| \sigma^2, \bm{\gamma}, \bm{y}_o \right]}
+%
+\end{align*}
+%
+First consider the numerator of the above equation
+%
+\begin{align*}
+%
+\left[ \sigma^2, \bm{\beta}_{\bm{\gamma}} \middle| \bm{\gamma}, \bm{y}_o \right] & \propto \left[ \bm{y}_o \middle| \bm{\beta}_{\bm{\gamma}}, \sigma^2, \bm{\gamma} \right] \left[ \bm{\beta}_{\bm{\gamma}} \middle| \sigma^2, \bm{\gamma} \right] \left[ \sigma^2 \right]\\
+%
+& \propto \left( \sigma^2 \right)^{ - \frac{n_o} {2}} \exp{ \left\{ - \frac{1} {2 \sigma^2} \left( \bm{y}_o - \bm{X}_{o \bm{\gamma}} \bm{\beta}_{\bm{\gamma}} \right)^T \left( \bm{y}_o - \bm{X}_{o \bm{\gamma}} \bm{\beta}_{\bm{\gamma}} \right) \right\} } \left( \sigma^2 \left| \bm{\Delta}_{\bm{\gamma}}^+ \right| \right)^{ - \frac{1} {2}} \exp{ \left\{ - \frac{1} {2 \sigma^2} \bm{\beta}_{\bm{\gamma}}^T \bm{\Delta}_{\bm{\gamma}} \bm{\beta}_{\bm{\gamma}} \right\} } \frac{1} {\sigma^2}\\
+%
+& \propto \left( \sigma^2 \right)^{ - \frac{n_o - 1} {2} - 1} \exp{ \left\{ - \frac{1} {\sigma^2} \frac{ \left( \bm{y}_o - \bm{X}_{o \bm{\gamma}} \bm{\beta}_{\bm{\gamma}} \right)^T \left( \bm{y}_o - \bm{X}_{o \bm{\gamma}} \bm{\beta}_{\bm{\gamma}} \right) + \bm{\beta}_{\bm{\gamma}}^T \bm{\Delta}_{\bm{\gamma}} \bm{\beta}_{\bm{\gamma}} } {2} \right\} } \\
+%
+\end{align*}
+%
+Now we average over $\bm{\beta}_{\bm{\gamma}}$ by replacing $\bm{\beta}_{\bm{\gamma}}$ with its posterior mean $\tilde{\bm{\beta}}_{\bm{\gamma}} = \left( \bm{X}_{o \bm{\gamma}}^T \bm{X}_{o \bm{\gamma}} + \bm{\Delta}_{\bm{\gamma}} \right)^{ - 1} \bm{X}_{o \bm{\gamma}}^T \bm{y}_o$ to get the posterior distribution
+%
+\begin{align*}
+%
+\left[ \sigma^2 \middle| \bm{\gamma}, \bm{y}_o \right] & \propto  \left( \sigma^2 \right)^{ - \frac{n_o - 1} {2} - 1} \exp{ \left\{ - \frac{1} {\sigma^2} \frac{ \left( \bm{y}_o - \bm{X}_{o \bm{\gamma}} \tilde{\bm{\beta}}_{\bm{\gamma}} \right)^T \left( \bm{y}_o - \bm{X}_{o \bm{\gamma}} \tilde{\bm{\beta}}_{\bm{\gamma}} \right) + \tilde{\bm{\beta}}_{\bm{\gamma}}^T \bm{\Delta}_{\bm{\gamma}} \tilde{\bm{\beta}}_{\bm{\gamma}} } {2} \right\} } \\
+%
+\end{align*}  
+%
+which is IG$\left( \frac{n_o - 1} {2}, \frac{ \left( \bm{y}_o - \bm{X}_{o \bm{\gamma}} \tilde{\bm{\beta}}_{\bm{\gamma}} \right)^T \left( \bm{y}_o - \bm{X}_{o \bm{\gamma}} \tilde{\bm{\beta}}_{\bm{\gamma}} \right) + \tilde{\bm{\beta}}_{\bm{\gamma}}^T \bm{\Delta}_{\bm{\gamma}} \tilde{\bm{\beta}}_{\bm{\gamma}} } {2} \right)$. Now consider the quadratic term 
+%
+\begin{align*}
+%
+\left( \bm{y}_o - \bm{X}_{o \bm{\gamma}} \tilde{\bm{\beta}}_{\bm{\gamma}} \right)^T \left( \bm{y}_o - \bm{X}_{o \bm{\gamma}} \tilde{\bm{\beta}}_{\bm{\gamma}} \right) & = \bm{y}_o^T \bm{y}_o - \bm{y}_o^T \bm{X}_{o \bm{\gamma}} \tilde{\bm{\beta}}_{\bm{\gamma}} - \tilde{\bm{\beta}}_{\bm{\gamma}}^T \bm{X}_{o \bm{\gamma}}^T \bm{y}_o + \tilde{\bm{\beta}}_{\bm{\gamma}}^T \left( \bm{X}_{o \bm{\gamma}}^T \bm{X}_{o \bm{\gamma}} + \bm{\Delta}_{\bm{\gamma}} \right) \tilde{\bm{\beta}}_{\bm{\gamma}}
+%
+\end{align*}
+%
+Note: Somehow $\tilde{\bm{\beta}}_{\bm{\gamma}}^T \bm{X}_{o \bm{\gamma}}^T \bm{y}_o = \bm{y}_o^T \bm{X}_{o \bm{\gamma}} \left( \bm{X}_{ o \bm{\gamma}}^T \bm{X}_{o \bm{\gamma}} + \bm{\Delta}_{\bm{\gamma}} \right)^{ - 1} \bm{X}_{o \bm{\gamma}}^T \bm{y}_o = 0$???
+%%
+%%
+\subsection{Posterior for $\bm{y}_a$}
+%%
+%%
+%%
 \section{Full Conditionals}
 %%
 %%
@@ -92,10 +159,59 @@ which is $\mbox{IG} \left( \frac{n_o + p_{\bm{\gamma}}} {2}, \frac{\left( \bm{y}
 %\begin{align*}
 %\left[ \bm{y}_a \middle| \cdot \right] & \propto 
 %\end{align*}
-
-
-
-
+%%
+%%
+\subsection{Full Conditional for $\bm{\beta}_{\bm{\gamma}}$}
+%
+\begin{align*}
+%
+\left[ \bm{\beta}_{\bm{\gamma}} \middle| \cdot \right] & \propto \int \left[ \bm{y}_o \middle| \bm{\beta}_{\bm{\gamma}}, \sigma^2, \bm{\gamma} \right] \left[ \bm{y}_a \middle| \bm{\beta}_{\bm{\gamma}}, \sigma^2, \bm{\gamma} \right] \left[ \bm{\beta}_{\bm{\gamma}} \middle| \sigma^2, \bm{\gamma} \right] \, d \bm{y}_a \\
+%
+ & \propto \left[ \bm{y}_o \middle| \bm{\beta}_{\bm{\gamma}}, \sigma^2, \bm{\gamma} \right] \left[ \bm{\beta}_{\bm{\gamma}} \middle| \sigma^2, \bm{\gamma} \right] \int \left[ \bm{y}_a \middle| \bm{\beta}_{\bm{\gamma}}, \sigma^2, \bm{\gamma} \right]  \, d \bm{y}_a \\
+%
+ & \propto \exp{ \left\{ - \frac{1} {2 \sigma^2} \left( \bm{y}_o - \bm{X}_{o \bm{\gamma}} \bm{\beta}_{\bm{\gamma}} \right)^T \left( \bm{y}_o - \bm{X}_{o \bm{\gamma}} \bm{\beta}_{\bm{\gamma}} \right) \right\} } \exp{ \left\{ - \frac{1} {2 \sigma^2} \bm{\beta}_{\bm{\gamma}}^T \bm{\Delta}_{\bm{\gamma}} \bm{\beta}_{\bm{\gamma}} \right\} } \\
+%
+ & \propto \exp{ \left\{ - \frac{1} {2 \sigma^2} \left[ \bm{\beta}_{\bm{\gamma}}^T \left(\bm{X}_{o \bm{\gamma}}^T \bm{X}_{o \bm{\gamma}} + \bm{\Delta}_{\bm{\gamma}} \right) \bm{\beta}_{\bm{\gamma}} - 2 \bm{\beta}_{\bm{\gamma}}^T \left( \bm{X}_{o \bm{\gamma}}^T \bm{y}_o \right) \right] \right\} } \\
+%
+\end{align*}
+%
+which is MVN $\left( \bm{A}^{ - 1} \bm{b}, \bm{A}^{ - 1} \right)$ where $\bm{A}^{ - 1} = \left( \bm{X}_{o \bm{\gamma}}^T \bm{X}_{o \bm{\gamma}} + \bm{\Delta}_{\bm{\gamma}} \right)^{ - 1}$ and $\bm{b} = \bm{X}_{o \bm{\gamma}}^T \bm{y}_o$
+%
+%%
+%%
+\subsection{Full Conditional for $\gamma_j$}
+%
+For $j = 1, \ldots, p$ and using the fact that $\beta_j = \left( \bm{X}_{c j}^T \bm{X}_{c j} \right)^{ - 1} \bm{X}_{c j}^T \bm{y}_c$ and $\bm{X}_{c j}^T \bm{X}_{c j} = \delta_j$ 
+,
+%
+\begin{align*}
+%
+\left[ \gamma_j \middle| \cdot \right] & \propto \left[ \bm{y}_c, \middle| \beta_{\gamma_j}, \sigma^2, \gamma_j, \bm{X}_o, \bm{X}_a, \bm{y}_a \right] \left[ \beta_{\gamma_j}, \sigma^2 \middle| \gamma_j \right] \left[ \gamma_j \right] \\
+%
+& \propto \exp{ \left\{ - \frac{1} {2 \sigma^2} \left( \bm{y}_c - \bm{X}_{c j} \gamma_j \beta_j \right)^T \left( \bm{y}_c - \bm{X}_{c j} \gamma_j \beta_j \right) \right\} } \left( \frac{\lambda_j} {\sigma^2} \right)^{ \frac{\gamma_j} {2} } \exp{ \left\{ - \frac{\gamma_j \lambda_j \beta_j^2} {2 \sigma^2} \right\} } \pi^{\gamma_j} \left( 1 - \pi \right)^{1 - \gamma_j} \\
+%
+& \propto \left[ \left( \frac{\lambda_j} {\sigma^2} \right)^{ \frac{1} {2} } \exp{ \left\{ - \frac{1} {2 \sigma^2} \left[ \beta_j^2 \left( \bm{X}_{c j}^T \bm{X}_{c j} + \lambda_j \right) - 2 \beta_j \bm{X}_{c j}^T \bm{y}_c \right] \right\} } \frac{\pi} {1 - \pi }\right]^{\gamma_j} \\
+%
+& \propto \left[ \left( \frac{\lambda_j} {\sigma^2} \right)^{ \frac{1} {2} } \exp{ \left\{ - \frac{1} {2 \sigma^2} \left[ \beta_j^2 \left( \delta_j + \lambda_j \right) - 2 \delta_j \beta_j^2 \right] \right\} } \frac{\pi} {1 - \pi } \right]^{\gamma_j} \\
+%
+& \propto \Psi^{\gamma_j}
+%
+\end{align*}
+%
+which is Bern$\left( \frac{\Psi} {1 + \Psi} \right)$ where $\Psi =  \left( \frac{\lambda_j} {\sigma^2} \right)^{ \frac{1} {2} } \exp{ \left\{ - \frac{1} {2 \sigma^2} \left[ \beta_j^2 \left( \delta_j + \lambda_j \right) - 2 \delta_j \beta_j^2 \right] \right\} } \frac{\pi} {1 - \pi }$
+%
+%%
+%%
+\section{Data Augmentation}
+To perform the model selection and averaging, the ``complete'' design matrix
+%
+\begin{align*}
+%
+\bm{X}_c & = \left[ \begin{array}{c} \bm{X}_o \\ \bm{X}_a \end{array} \right]
+%
+\end{align*}
+%
+which has orthogonal columns, hence $\bm{X}_c^T \bm{X}_c = \bm{I}$. The matrix $\bm{X}_a$ is chosen to be the Cholesky decomposition of $\bm{D} - \bm{X}_o^T \bm{X}_o$ where $\bm{D}$ is a diagonal matrix with $\delta + \varepsilon$ on the diagonal where $\delta$ is the largest eigenvalue of $\bm{X}_o^T \bm{X}_o$ and $\varepsilon = 0.001$ is added to avoid computationally unstable solutions.
 
 
 
