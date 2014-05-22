@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.1415926-2.5-1.40.14 (TeX Live 2013) (format=pdflatex 2013.5.30)  21 MAY 2014 17:08
+This is pdfTeX, Version 3.1415926-2.5-1.40.14 (TeX Live 2013) (format=pdflatex 2013.5.30)  22 MAY 2014 11:15
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -216,7 +216,7 @@ Overfull \hbox (57.07579pt too wide) in paragraph at lines 110--110
  []
 
 
-Overfull \hbox (12.88289pt too wide) in paragraph at lines 152--152
+Overfull \hbox (12.88289pt too wide) in paragraph at lines 162--162
 [] 
  []
 
@@ -224,7 +224,7 @@ Overfull \hbox (12.88289pt too wide) in paragraph at lines 152--152
 Here is how much of TeX's memory you used:
  2465 strings out of 493315
  32931 string characters out of 6137904
- 113402 words of memory out of 5000000
+ 115402 words of memory out of 5000000
  5886 multiletter control sequences out of 15000+600000
  13635 words of font info for 48 fonts, out of 8000000 for 9000
  957 hyphenation exceptions out of 8191
@@ -247,7 +247,7 @@ nts/cm/cmr8.pfb></usr/local/texlive/2013/texmf-dist/fonts/type1/public/amsfonts
 /cm/cmsy10.pfb></usr/local/texlive/2013/texmf-dist/fonts/type1/public/amsfonts/
 cm/cmsy5.pfb></usr/local/texlive/2013/texmf-dist/fonts/type1/public/amsfonts/cm
 /cmsy7.pfb>
-Output written on ghoshAndClyde.pdf (4 pages, 167911 bytes).
+Output written on ghoshAndClyde.pdf (4 pages, 169245 bytes).
 PDF statistics:
  85 PDF objects out of 1000 (max. 8388607)
  61 compressed objects within 1 object stream

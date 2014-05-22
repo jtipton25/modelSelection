@@ -86,7 +86,7 @@ which is independent of the augmented data $\left( \bm{y}_a, \bm{X}_a \right)$. 
 %
 \end{align*}
 %
-which is MVN$\left( \bm{A}^{ - 1} \bm{b}, \bm{A}^{ - 1} \right)$ where $\bm{A}^{ - 1} = \left( \bm{X}_{o \bm{\gamma}}^T \bm{X}_{o \bm{\gamma}} + \bm{\Delta}_{\bm{\gamma}} \right)^{ - 1}$ and $\bm{b} = \bm{X}_{o \bm{\gamma}}^T \bm{y}_o$.
+which is MVN$\left( \tilde{\bm{\beta}}_{\bm{\gamma}}, \bm{V}_{\bm{\beta}} \right)$ where $\tilde{\bm{\beta}}_{\bm{\gamma}} = \left( \bm{X}_{o \bm{\gamma}}^T \bm{X}_{o \bm{\gamma}} + \bm{\Delta}_{\bm{\gamma}} \right)^{ - 1}\bm{X}_{o \bm{\gamma}}^T \bm{y}_o$ and $\bm{V}_{\bm{\beta}} = \left( \bm{X}_{o \bm{\gamma}}^T \bm{X}_{o \bm{\gamma}} + \bm{\Delta}_{\bm{\gamma}} \right)^{ - 1}$.
 %%
 %%
 \subsection{Posterior for $\sigma^2$}
@@ -121,7 +121,7 @@ which is IG$\left( \frac{n_o - 1} {2}, \frac{ \left( \bm{y}_o - \bm{X}_{o \bm{\g
 %
 \begin{align*}
 %
-\left( \bm{y}_o - \bm{X}_{o \bm{\gamma}} \tilde{\bm{\beta}}_{\bm{\gamma}} \right)^T \left( \bm{y}_o - \bm{X}_{o \bm{\gamma}} \tilde{\bm{\beta}}_{\bm{\gamma}} \right) & = \bm{y}_o^T \bm{y}_o - \bm{y}_o^T \bm{X}_{o \bm{\gamma}} \tilde{\bm{\beta}}_{\bm{\gamma}} - \tilde{\bm{\beta}}_{\bm{\gamma}}^T \bm{X}_{o \bm{\gamma}}^T \bm{y}_o + \tilde{\bm{\beta}}_{\bm{\gamma}}^T \left( \bm{X}_{o \bm{\gamma}}^T \bm{X}_{o \bm{\gamma}} + \bm{\Delta}_{\bm{\gamma}} \right) \tilde{\bm{\beta}}_{\bm{\gamma}}
+\left( \bm{y}_o - \bm{X}_{o \bm{\gamma}} \tilde{\bm{\beta}}_{\bm{\gamma}} \right)^T \left( \bm{y}_o - \bm{X}_{o \bm{\gamma}} \tilde{\bm{\beta}}_{\bm{\gamma}} \right) & = \bm{y}_o^T \bm{y}_o - 2 \tilde{\bm{\beta}}_{\bm{\gamma}}^T \bm{X}_{o \bm{\gamma}}^T \bm{y}_o + \tilde{\bm{\beta}}_{\bm{\gamma}}^T \left( \bm{X}_{o \bm{\gamma}}^T \bm{X}_{o \bm{\gamma}} + \bm{\Delta}_{\bm{\gamma}} \right) \tilde{\bm{\beta}}_{\bm{\gamma}}
 %
 \end{align*}
 %
@@ -129,6 +129,24 @@ Note: Somehow $\tilde{\bm{\beta}}_{\bm{\gamma}}^T \bm{X}_{o \bm{\gamma}}^T \bm{y
 %%
 %%
 \subsection{Posterior for $\bm{y}_a$}
+%
+This posterior is calculated in the same fashion as a posterior predictive distribution of new observations $\tilde{\bm{y}}$ given new covariates $\tilde{\bm{X}}$ for simple linear regression as shown $\left[ \tilde{\bm{y}} \middle| \sigma^2, \bm{y}, \tilde{\bm{X}} \right] \sim \mbox{N}\left( \tilde{\bm{X}} \hat{\bm{\beta}}, \sigma^2 \left( \bm{I} + \tilde{\bm{X}} \bm{V}_{\bm{\beta}} \tilde{\bm{X}}^T \right) \right)
+$
+which is  
+%
+\begin{align*}
+%
+\left[ \bm{y}_A \middle| \sigma^2, \bm{\gamma}, \bm{y}_o \right] \sim \mbox{N}\left( \bm{X}_{a \bm{\gamma}} \tilde{\bm{\beta}}_{\bm{\gamma}}, \sigma^2 \left( \bm{I}_{n_a} + \bm{X}_{a \bm{\gamma}} \left( \bm{X}_{o \bm{\gamma}}^T \bm{X}_{o \bm{\gamma}} + \bm{\Delta}_{\bm{\gamma}} \right)^{ - 1} \bm{X}_{a \bm{\gamma}}^T \right) \right)
+%
+\end{align*}
+%%
+%%
+\subsection{Posterior for $\gamma_j, j = 1, \ldots, p$}
+%
+\begin{align*}
+%
+%
+\end{align*}
 %%
 %%
 %%
