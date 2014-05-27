@@ -78,7 +78,7 @@ mcmc.oda <- function(Y.o, X.o, Y.new, X.new, params, epsilon = 0.001){
     ## sample Y.a
     ##
     
-    Y.a <- rmvnorm(1, mean = X.a.gamma %*% beta.tilde.gamma, sigma = sigma.squared * I.a + X.a.gamma %*% solve(t(X.o.gamma) %*% X.o.gamma + Delta.gamma) %*% t(X.a.gamma))
+    Y.a <- rmvnorm(1, mean = X.a.gamma %*% beta.tilde.gamma, sigma = sigma.squared * (I.a + X.a.gamma %*% solve(t(X.o.gamma) %*% X.o.gamma + Delta.gamma) %*% t(X.a.gamma)))
     Y.c <- c(Y.o, Y.a)
     beta.hat <- projectXontoY %*% Y.c
     
