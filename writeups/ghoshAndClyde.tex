@@ -136,7 +136,7 @@ which is
 %
 \begin{align*}
 %
-\left[ \bm{y}_A \middle| \sigma^2, \bm{\gamma}, \bm{y}_o \right] \sim \mbox{N}\left( \bm{X}_{a \bm{\gamma}} \tilde{\bm{\beta}}_{\bm{\gamma}}, \sigma^2 \left( \bm{I}_{n_a} + \bm{X}_{a \bm{\gamma}} \left( \bm{X}_{o \bm{\gamma}}^T \bm{X}_{o \bm{\gamma}} + \bm{\Delta}_{\bm{\gamma}} \right)^{ - 1} \bm{X}_{a \bm{\gamma}}^T \right) \right)
+\left[ \bm{y}_a \middle| \sigma^2, \bm{\gamma}, \bm{y}_o \right] \sim \mbox{N}\left( \bm{X}_{a \bm{\gamma}} \tilde{\bm{\beta}}_{\bm{\gamma}}, \sigma^2 \left( \bm{I}_{n_a} + \bm{X}_{a \bm{\gamma}} \left( \bm{X}_{o \bm{\gamma}}^T \bm{X}_{o \bm{\gamma}} + \bm{\Delta}_{\bm{\gamma}} \right)^{ - 1} \bm{X}_{a \bm{\gamma}}^T \right) \right)
 %
 \end{align*}
 %%
@@ -145,6 +145,7 @@ which is
 %
 \begin{align*}
 %
+\left[ \gamma_j \middle| \bm{y}_a, \sigma^2, \bm{y}_o \right] & \propto \mbox{Bern} \left( \frac{\Psi_j \left( \bm{y}_a, \sigma^2, \bm{y}_o \right)} {1 + \Psi_j \left( \bm{y}_a, \sigma^2, \bm{y}_o \right)} \right)
 %
 \end{align*}
 %%
@@ -206,7 +207,7 @@ For $j = 1, \ldots, p$ and using the fact that $\beta_j = \left( \bm{X}_{c j}^T 
 %
 \left[ \gamma_j \middle| \cdot \right] & \propto \left[ \bm{y}_c, \middle| \beta_{\gamma_j}, \sigma^2, \gamma_j, \bm{X}_o, \bm{X}_a, \bm{y}_a \right] \left[ \beta_{\gamma_j}, \sigma^2 \middle| \gamma_j \right] \left[ \gamma_j \right] \\
 %
-& \propto \exp{ \left\{ - \frac{1} {2 \sigma^2} \left( \bm{y}_c - \bm{X}_{c j} \gamma_j \beta_j \right)^T \left( \bm{y}_c - \bm{X}_{c j} \gamma_j \beta_j \right) \right\} } \left( \frac{\lambda_j} {\sigma^2} \right)^{ \frac{\gamma_j} {2} } \exp{ \left\{ - \frac{\gamma_j \lambda_j \beta_j^2} {2 \sigma^2} \right\} } \pi^{\gamma_j} \left( 1 - \pi \right)^{1 - \gamma_j} \\
+& \propto \left( \sigma^2 \right)^{ - \frac{\gamma_j} {2}} \exp{ \left\{ - \frac{1} {2 \sigma^2} \left( \bm{y}_c - \bm{X}_{c j} \gamma_j \beta_j \right)^T \left( \bm{y}_c - \bm{X}_{c j} \gamma_j \beta_j \right) \right\} } \left( \frac{\lambda_j} {\sigma^2} \right)^{ \frac{\gamma_j} {2} } \exp{ \left\{ - \frac{\gamma_j \lambda_j \beta_j^2} {2 \sigma^2} \right\} } \pi^{\gamma_j} \left( 1 - \pi \right)^{1 - \gamma_j} \\
 %
 & \propto \left[ \left( \frac{\lambda_j} {\sigma^2} \right)^{ \frac{1} {2} } \exp{ \left\{ - \frac{1} {2 \sigma^2} \left[ \beta_j^2 \left( \bm{X}_{c j}^T \bm{X}_{c j} + \lambda_j \right) - 2 \beta_j \bm{X}_{c j}^T \bm{y}_c \right] \right\} } \frac{\pi} {1 - \pi }\right]^{\gamma_j} \\
 %
