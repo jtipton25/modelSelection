@@ -2,9 +2,9 @@
 ## libraries and functions
 ##
 
-source('dinvgamma.R')
-source('mcmc.lm.R')
-source('rMVN.R')
+source('~/functions/dinvgamma.R')
+source('~/Linear-Model/Simple Linear Regression/mcmc.lm.R')
+source('~/functions/rMVN.R')
 
 setwd("~/Linear-Model/Simple Linear Regression/")
 source("mcmc.lm.R")
